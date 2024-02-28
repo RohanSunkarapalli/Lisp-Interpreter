@@ -1,0 +1,312 @@
+*** Test cases ***
+TEST 1 - SELF-EVALUATING EXPRESSIONS
+------------------------------------
+<12
+>12
+
+<-3.2
+>-3.2
+
+<12x
+>Error
+
+<12.3.5
+>Error
+
+<"Hello, World!"
+>"Hello, World!"
+
+<"hello
+>Error
+
+<()
+>()
+
+<t
+>T
+
+<T
+>T
+
+TEST 2 - NUMERICAL OPERATIONS
+-----------------------------
+<(+)
+>0
+
+<(+ 1)
+>1
+
+<(+ 4 5)
+>9
+
+<(+ 4 -5 1 10 0 3)
+>13
+
+<(-)
+>Error
+
+<(- 3.2)
+>-3.2
+
+<(- 4 1)
+>3
+
+<(- 4 1 3)
+>0
+
+<(*)
+>1
+
+<(* -63.8)
+>-63.8
+
+<(* 3 6)
+>18
+
+<(* 5 3 1)
+>15
+
+<(/)
+>Error
+
+<(/ 3)
+>1/3 ~ 0.33
+
+<(/ 10 2)
+>5
+
+<(/ 6 4 2)
+>3/4
+
+<(/ 3 0)
+>Error
+
+<(+ 5 (- 20 (/ 4 2)) (* 3 2))
+>29
+
+TEST 3 - SIMPLE PAIRS
+---------------------
+<(cons 1 2)
+>(1 . 2)
+
+<(cons 1 2 3)
+>Error
+
+<(cons 1 ())
+>(1)
+
+<(cons "hello" 3)
+>("hello" . 3)
+
+<(car (cons 1 2))
+>1
+
+<(cdr (cons 2 t))
+>T
+
+TEST 4 - QUOTE
+--------------
+<'(1 2 3)
+>(1 2 3)
+
+<(quote (bleh 3))
+>(BLEH 3)
+
+<(quote 1 2)
+>Error
+
+TEST 5 - SIMPLE PREDICATES
+--------------------------
+<(number? 3)
+>T
+
+<(number? ())
+>()
+
+<(symbol? 'hello)
+>T
+
+<(symbol? "hello")
+()
+
+<(list? (cons 1 2))
+>T
+
+<(list? '())
+>()
+
+<(list? '(1 2 3))
+>T
+
+<(list? '(1 (2 3) 4))
+>T
+
+<(list? "I am not a list")
+>()
+
+<(nil? ())
+>T
+
+<(nil? (cdr '(hey)))
+>T
+
+TEST 6 - LOGICAL OPERATIONS
+---------------------------
+<(and? t t)
+>T
+
+<(and? 3 4)
+>T
+
+<(and? () t)
+>()
+
+<(or? () ())
+>()
+
+<(or? 5 ())
+>T
+
+<(or? t t)
+>T
+
+TEST 7 - EQUALITY
+-----------------
+<(eq? 3 3)
+>T
+
+<(eq? 'hello 'hello)
+>T
+
+<(eq? "hello" "hello")
+>()
+
+<(eq? () ())
+>T
+
+<(eq? t t)
+>T
+
+TEST 8 - NUMERICAL COMPARISON
+-----------------------------
+<(< 1 2)
+>T
+
+<(< 1 'hello)
+>Error
+
+<(> 2.0 2)
+>()
+
+<(> (+ 2 (- 10 3) (* 2 4) (/ 16 2)) 20)
+>T
+
+<(= 3 3)
+>T
+
+<(= 3 4)
+>()
+
+<(= 'hello 'hi)
+>Error
+
+TEST 9 - CONDITIONALS
+---------------------
+<(cond (> 3 2) 'first (> 2 3) 'second)
+>FIRST
+
+<(cond (> 3 3) (not evaluated) (= 3 3) 'second)
+>SECOND
+
+<(cond () 'first () 'second t 'default)
+>DEFAULT
+
+<(if t 'first (not evaluated))
+>FIRST
+
+<(if () (not evaluated) 'second)
+>SECOND
+
+TEST 10 - ASSIGNMENT
+--------------------
+<x
+>ERROR
+
+<(set x 10)
+>Unspecified
+
+<x
+>10
+
+<(set y "hello")
+>Unspecified
+
+<y
+>"hello"
+
+<(+ (* x 5) 3)
+>53
+
+<(set 'x 20)
+>Error
+
+TEST 11 - USER DEFINED FUNCTIONS
+--------------------------------
+<(define add (x y) (+ x y))
+>Unspecified
+
+<(add 2 3)
+>5
+
+<(add 2 3 4)
+>Error
+
+<(define pair (car cdr) (cons car cdr))
+>Unspecified
+
+<(set x (pair 1 2))
+>Unspecified
+
+<x
+>(1 . 2)
+
+<(car x)
+>1
+
+TEST 12 - RECURSION
+-------------------
+<(define sum-to-n (n) (if (< n 1) n (+ n (sum-to-n (- n 1)))))
+>Unspecified
+
+<(sum-to-n 5)
+>15
+
+<(define fib (n) (if (< n 2) n (+ (fib (- n 1)) (fib (- n 2)))))
+>Unspecified
+
+<(fib 10)
+>55
+
+<(define fact (n) (if (= n 0) 1 (* n (fact (- n 1)))))
+>Unspecified
+
+<(fact 5)
+>120
+
+TEST 13 - MISCELANIOUS: LAMBDA, EVAL, APPLY
+<(define mapcar (fn lst) (if (list? lst) (cons (fn (car lst)) (mapcar fn (cdr lst))) ()))
+>Unspecified
+
+<(mapcar (lambda (x) (+ x 1)) '(3 89 6 19 80))
+>(4 90 7 20 81)
+
+<'(cons 1 2)
+>(CONS 1 2)
+
+<(eval '(cons 1 2))
+>(1 . 2)
+
+<(apply + '(1 2 3))
+>6
+
+ALL TESTS DONE
